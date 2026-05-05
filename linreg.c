@@ -18,12 +18,12 @@ inline static double sqr(double x) {
  * @param n nombre de points
  * @param x abscisses des points
  * @param y ordonnées des points
- * @param m pente
+ * @param a pente
  * @param b ordonnée à l'origine
  * @param r coeficient de corélation 
  * @return 0 si le calcul s'est déroulé comme prévu
  */
-int linreg(int n, const double x[], const double y[], double* m, double* b, double* r){
+int linreg(int n, const double x[], const double y[], double* a, double* b, double* r){
     double   sumx = 0.0;                      /* sum of x     */
     double   sumx2 = 0.0;                     /* sum of x**2  */
     double   sumxy = 0.0;                     /* sum of x * y */
@@ -41,13 +41,13 @@ int linreg(int n, const double x[], const double y[], double* m, double* b, doub
     double denom = (n * sumx2 - sqr(sumx));
     if (denom == 0) {
         // singular matrix. can't solve the problem.
-        *m = 0;
+        *a = 0;
         *b = 0;
         if (r) *r = 0;
             return 1;
     }
 
-    *m = (n * sumxy  -  sumx * sumy) / denom;
+    *a = (n * sumxy  -  sumx * sumy) / denom;
     *b = (sumy * sumx2  -  sumx * sumxy) / denom;
     if (r!=NULL) {
         *r = (sumxy - sumx * sumy / n) /    /* compute correlation coeff */
