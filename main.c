@@ -10,9 +10,7 @@ int main()
     {
         for(int j = 0 ; j < img.hauteur ; ++j)
         {
-            img.data[i][j].blue = 100;
-            img.data[i][j].red = 150;
-            img.data[i][j].green = 100;
+            img.data[i][j].alpha = 120;
         }
     }
 
