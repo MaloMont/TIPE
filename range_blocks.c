@@ -14,8 +14,8 @@ RangeBlock* trouveRBs(CanalImage img, int size, int *nbRB)
     {
         for(int j = 0 ; j < nbParColonne ; ++j)
         {
-            partition[i * img.largeur + j].x = i * size;
-            partition[i * img.largeur + j].y = j * size;
+            partition[i * nbParLigne + j].x = i * size;
+            partition[i * nbParLigne + j].y = j * size;
         }
     }
     return partition;

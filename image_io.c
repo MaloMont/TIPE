@@ -58,21 +58,22 @@ CanalImage canalRouge(Image img)
     return rouge;
 }
 
+/* extrait de img le carré de size * size commençant en (x, y) */
 CanalPixel** pixelsZone(CanalImage img, int x, int y, int size)
 {
     CanalPixel **pixels = malloc(size * sizeof(CanalPixel*));
 
-    for(int i = x ; i < x + size ; ++i)
+    for(int i = 0 ; i < size ; ++i)
     {
         pixels[i] = malloc(size * sizeof(CanalPixel));
-        for(int j = y ; j < y + size ; ++j)
-            pixels[i][j] = img.data[i][j];
+        for(int j = 0 ; j < size ; ++j)
+            pixels[i][j] = img.data[i + x][j + y];
     }
 
     return pixels;
 }
 
-// divise la taille de la zone par 2
+/* divise la taille de la zone par 2 */
 CanalPixel** redimensionneZone(CanalPixel** zone, int ancienneTaille, int nouvelleTaille)
 {
     if( nouvelleTaille * 2 != ancienneTaille )
