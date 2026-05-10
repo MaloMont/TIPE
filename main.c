@@ -27,5 +27,3 @@ int main()
     sauveFichier(img, fichierSortie);
     freeImage(&img);
 }
-
-
