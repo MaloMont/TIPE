@@ -60,11 +60,11 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
             if( linreg(RBsize * RBsize, valeursDB, valeursRB, &pente, &y0, &r) != 0)
                 printf("WARNING: la régression linéaire a levé une erreur.\n");
 
-            if(r < bestR)
+            else if(r < bestR)
             {
                 bestR = r;
-                fonction.x = x;
-                fonction.y = y;
+                fonction.x = cible.x - x;
+                fonction.y = cible.y - y;
                 fonction.pente = pente;
                 fonction.y0 = y0;
             }
