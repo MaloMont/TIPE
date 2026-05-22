@@ -1,6 +1,6 @@
 #ifndef LINREG 
 #define LINREG
 
-int linreg(int n, const double x[], const double y[], double* a, double* b, double* r);
+int linreg(int nbPoints, const double x[], const double y[], double *pente, double *y0, double *error);
 
 #endif

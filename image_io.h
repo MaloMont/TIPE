@@ -33,8 +33,6 @@ Image chargeFichier(const char* fichier);
 void sauveFichier(Image img, const char* fichier);
 void freeImage(Image *img);
 CanalImage canalRouge(Image img);
-CanalImage restoreCanal(const Fonction* ifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter);
-Image restoreImage(const Fonction** tabifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter);
 
 CanalPixel** pixelsZone(CanalImage img, int x, int y, int size);
 CanalPixel** redimensionneZone(CanalPixel** zone, int ancienneTaille, int nouvelleTaille);

@@ -1,59 +1,127 @@
-// Source - https://stackoverflow.com/a/19040841
-// Posted by Mark Lakata, modified by community. See post 'Timeline' for change history
-// Retrieved 2026-05-05, License - CC BY-SA 3.0
-
-#include "linreg.h"
-#include <stdlib.h>
-#include <math.h>
-
-
-inline static double sqr(double x) {
-    return x*x;
-}
-
-
 /**
- * @brief régression linéaire pour des points de coordonnées (x, y).
- * 
- * @param n nombre de points
- * @param x abscisses des points
- * @param y ordonnées des points
- * @param a pente
- * @param b ordonnée à l'origine
- * @param r coeficient de corélation 
- * @return 0 si le calcul s'est déroulé comme prévu
+ * borrowed from emreerdin (https://github.com/emreerdin/SimpleLinearRegressioninC/tree/main)
+ * under MIT licence
  */
-int linreg(int n, const double x[], const double y[], double* a, double* b, double* r){
-    double   sumx = 0.0;                      /* sum of x     */
-    double   sumx2 = 0.0;                     /* sum of x**2  */
-    double   sumxy = 0.0;                     /* sum of x * y */
-    double   sumy = 0.0;                      /* sum of y     */
-    double   sumy2 = 0.0;                     /* sum of y**2  */
 
-    for (int i=0;i<n;i++){ 
-        sumx  += x[i];       
-        sumx2 += sqr(x[i]);  
-        sumxy += x[i] * y[i];
-        sumy  += y[i];      
-        sumy2 += sqr(y[i]); 
-    } 
+#include <stdio.h>
+#include <stdlib.h>
 
-    double denom = (n * sumx2 - sqr(sumx));
-    if (denom == 0) {
-        // singular matrix. can't solve the problem.
-        *a = 0;
-        *b = 0;
-        if (r) *r = 0;
-            return 1;
-    }
+typedef struct{
+	
+	double x;
+	double y;
+} DataSet;
 
-    *a = (n * sumxy  -  sumx * sumy) / denom;
-    *b = (sumy * sumx2  -  sumx * sumxy) / denom;
-    if (r!=NULL) {
-        *r = (sumxy - sumx * sumy / n) /    /* compute correlation coeff */
-              sqrt((sumx2 - sqr(sumx)/n) *
-              (sumy2 - sqr(sumy)/n));
-    }
+double CalculateXMean(DataSet dataSet[], int length);
+double CalculateYMean(DataSet dataSet[], int length);
+double CalculateSlope(DataSet dataSet[], int length, double xMean, double yMean);
+double CalculateIntercept(double slope, double xMean, double yMean);
+double MeanSquaredError(DataSet dataSet[], int length, double slope, double intercept);
 
-    return 0; 
+DataSet* convertieEnDataSet(const double x[], const double y[], int nbPoints)
+{
+    DataSet *data = malloc(nbPoints * sizeof(DataSet));
+
+    for(int i = 0 ; i < nbPoints ; ++i)
+        data[i] = (DataSet){x[i], y[i]};
+
+    return data;
 }
+
+int linreg(int nbPoints, const double x[], const double y[], double *pente, double *y0, double *error)
+{
+	DataSet *dataSet = convertieEnDataSet(x, y, nbPoints);
+
+	double xMean = CalculateXMean(dataSet, nbPoints);
+    double yMean = CalculateYMean(dataSet, nbPoints);
+
+    *pente = CalculateSlope(dataSet, nbPoints, xMean, yMean);
+	*y0 = CalculateIntercept(*pente, xMean, yMean);
+    *error = MeanSquaredError(dataSet, nbPoints, *pente, *y0);
+
+	free(dataSet);
+
+	return 0;
+}
+
+double CalculateXMean(DataSet dataSet[], int length){
+	
+	double sum = 0;
+	int i;
+	
+	for(i=0; i<length; i++){
+		
+		sum += dataSet[i].x;
+		
+	}
+	
+	return sum/length;	
+}
+
+double CalculateYMean(DataSet dataSet[], int length){
+	
+	double sum = 0;
+	int i;
+	
+	for(i=0; i<length; i++){
+		
+		sum += dataSet[i].y;
+		
+	}
+	
+	return sum/length;
+}
+
+
+double CalculateSlope(DataSet dataSet[], int length, double xMean, double yMean){
+	
+	
+	double nom = 0;
+	double den = 0;
+	int i;
+	
+	for(i=0; i<length; i++){
+		
+		nom += (dataSet[i].x - xMean) * (dataSet[i].y - yMean);
+		den += (dataSet[i].x - xMean) * (dataSet[i].x - xMean);
+	}
+	
+    if(den == 0)
+        return 0.;
+
+    return nom / den;
+}
+
+
+double CalculateIntercept(double slope, double xMean, double yMean){
+	
+	return yMean - (slope * xMean);
+	
+}
+
+
+double MeanSquaredError(DataSet dataSet[], int length, double slope, double intercept)
+{
+	double sum = 0;
+	int i;
+	double yPred = 0;
+	double error = 0;
+
+    for(i=0; i<length; i++)
+    {
+		yPred = (slope*dataSet[i].x) + intercept;
+		error = dataSet[i].y - yPred;
+		sum += error * error;
+	}
+
+	return sum/length;
+}
+
+
+
+
+
+
+
+
+

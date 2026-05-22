@@ -1,0 +1,10 @@
+#ifndef DECOMPRESSION_H
+#define DECOMPRESSION_H
+
+#include "image_io.h"
+#include "domain_blocks.h"
+
+CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter);
+Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter);
+
+#endif
