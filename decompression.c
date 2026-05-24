@@ -24,7 +24,7 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
         free(canal->data[i]);
     free(canal->data);
 
-    canal->data = redimensionneZone(aux.data, 2*canal->hauteur, canal->hauteur);
+    canal->data = redimensionneZoneRectangle(aux.data, aux.largeur, aux.hauteur);
 
     freeCanalImage(&aux);
 }
