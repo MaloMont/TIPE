@@ -28,7 +28,7 @@ int main()
     const int RBsize = 32;
 
     const char *fichierEntree = "images/arch_logo_gris.png";
-    Image img = chargeFichier(fichierEntree);
+    Image img = chargeCarre(fichierEntree, RBsize);
 
     Fonction *ifsRouge = trouveIFS(extraitCanal(img, CANAL_ROUGE), RBsize);
 

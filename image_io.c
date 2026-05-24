@@ -29,12 +29,16 @@ Image imageVide(int largeur, int hauteur, int nbCanaux)
     return img;
 }
 
+//même chose que chargeFichier mais de façon à que l'image soit divisible par les range blocks
+//ducoup le reste c'est du noir mais bon
 Image chargeCarre(const char* fichier, int RBsize)
 {
     int largeur, hauteur, nbCanaux;
     Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 0);
-    int largeurArrondie = largeur + RBsize - largeur % RBsize;
-    int hauteurArrondie = hauteur + RBsize - largeur % RBsize;
+
+    int largeurArrondie = largeur + RBsize - (largeur % RBsize);
+    int hauteurArrondie = hauteur + RBsize - (hauteur % RBsize);
+    
     Image img = imageVide(largeurArrondie, hauteurArrondie, nbCanaux);
 
     for(int i = 0 ; i < largeur ; ++i)
@@ -130,15 +134,16 @@ void remplaceCanal(Image img, int iCanal, CanalImage canal)
 
 CanalImage extraitCanal(Image img, int iCanal)
 {
-    CanalImage canal = { img.largeur, img.hauteur, malloc(img.largeur * sizeof(CanalPixel*)) };
-
+    CanalPixel **data = malloc(img.largeur * sizeof(CanalPixel*));
+    
     for(int i = 0 ; i < img.largeur ; ++i)
     {
-        canal.data[i] = malloc(img.hauteur * sizeof(CanalPixel));
+        data[i] = malloc(img.hauteur * sizeof(CanalPixel));
         for(int j = 0 ; j < img.hauteur ; ++j)
-            canal.data[i][j] = img.data[iCanal][i][j];
+            data[i][j] = img.data[iCanal][i][j];
     }
-
+    
+    CanalImage canal = { img.largeur, img.hauteur, data};
     return canal;
 }
 
