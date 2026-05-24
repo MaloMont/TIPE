@@ -9,6 +9,26 @@
 #include "image_io.h"
 #include "domain_blocks.h"
 
+Image imageVide(int largeur, int hauteur, int nbCanaux)
+{
+    CanalPixel ***data = malloc(nbCanaux * sizeof(CanalPixel**));
+    for(int c = 0 ; c < nbCanaux ; ++c)
+    {
+        data[c] = malloc(largeur * sizeof(CanalPixel*));
+        for(int i = 0 ; i < largeur ; ++i)
+            data[c][i] = calloc(hauteur, sizeof(CanalPixel));
+    }
+
+    Image img = (Image){
+        largeur,
+        hauteur,
+        nbCanaux,
+        data
+    };
+
+    return img;
+}
+
 Image chargeFichier(const char* fichier)
 {
     int largeur, hauteur, nbCanaux;
@@ -72,27 +92,6 @@ void freeCanalImage(CanalImage *canal)
         free(canal->data[i]);
 
     free(canal->data);
-}
-
-
-Image imageVide(int largeur, int hauteur, int nbCanaux)
-{
-    CanalPixel ***data = malloc(nbCanaux * sizeof(CanalPixel**));
-    for(int c = 0 ; c < nbCanaux ; ++c)
-    {
-        data[c] = malloc(largeur * sizeof(CanalPixel*));
-        for(int i = 0 ; i < largeur ; ++i)
-            data[c][i] = calloc(hauteur, sizeof(CanalPixel));
-    }
-
-    Image img = (Image){
-        largeur,
-        hauteur,
-        nbCanaux,
-        data
-    };
-
-    return img;
 }
 
 void remplaceCanal(Image img, int iCanal, CanalImage canal)
