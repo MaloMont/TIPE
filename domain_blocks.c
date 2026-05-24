@@ -30,7 +30,7 @@ void libereTableau2D(CanalPixel **T, int largeur)
 /* ça se voit */
 Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
 {
-    printf("searching for RB (%d %d, %d %d)", cible.x, cible.y, cible.x + RBsize, cible.y + RBsize);
+    //printf("searching for RB (%d %d, %d %d)", cible.x, cible.y, cible.x + RBsize, cible.y + RBsize);
     double *valeursRB = valeursZone1D(img, cible.x, cible.y, RBsize);
 
     int DBsize = 2 * RBsize;
@@ -62,12 +62,13 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
             if(ecart == 0)
             {
                 free(valeursRB);
+                printf("%d %d %f %f\n", fonction.x, fonction.y, fonction.pente, fonction.y0);
                 return fonction;
             }
         }
     }    
 
     free(valeursRB);
-
+    printf("%d %d %f %f\n", fonction.x, fonction.y, fonction.pente, fonction.y0);
     return fonction;
 }

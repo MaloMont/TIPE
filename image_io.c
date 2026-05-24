@@ -36,6 +36,8 @@ Image chargeCarre(const char* fichier, int RBsize)
     int largeur, hauteur, nbCanaux;
     Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 0);
 
+    printf("l : %d, h : %d\n", largeur, hauteur);
+
     int largeurArrondie = largeur + RBsize - (largeur % RBsize);
     int hauteurArrondie = hauteur + RBsize - (hauteur % RBsize);
     
@@ -45,10 +47,10 @@ Image chargeCarre(const char* fichier, int RBsize)
     {
         for(int j = 0 ; j < hauteur ; ++j)
         {
-            img.data[CANAL_ROUGE][i][j] = tmp[i * img.largeur + j].rouge;
-            img.data[CANAL_VERT][i][j]  = tmp[i * img.largeur + j].vert;
-            img.data[CANAL_BLEU][i][j]  = tmp[i * img.largeur + j].bleu;
-            img.data[CANAL_ALPHA][i][j] = tmp[i * img.largeur + j].alpha;
+            img.data[CANAL_ROUGE][i][j] = tmp[i + largeur * j].rouge;
+            img.data[CANAL_VERT][i][j]  = tmp[i + largeur * j].vert;
+            img.data[CANAL_BLEU][i][j]  = tmp[i + largeur * j].bleu;
+            img.data[CANAL_ALPHA][i][j] = tmp[i + largeur * j].alpha;
         }
     }
 
@@ -66,10 +68,10 @@ Image chargeFichier(const char* fichier)
     {
         for(int j = 0 ; j < img.hauteur ; ++j)
         {
-            img.data[CANAL_ROUGE][i][j] = tmp[i * img.largeur + j].rouge;
-            img.data[CANAL_VERT][i][j]  = tmp[i * img.largeur + j].vert;
-            img.data[CANAL_BLEU][i][j]  = tmp[i * img.largeur + j].bleu;
-            img.data[CANAL_ALPHA][i][j] = tmp[i * img.largeur + j].alpha;
+            img.data[CANAL_ROUGE][i][j] = tmp[i + img.largeur * j].rouge;
+            img.data[CANAL_VERT][i][j]  = tmp[i + img.largeur * j].vert;
+            img.data[CANAL_BLEU][i][j]  = tmp[i + img.largeur * j].bleu;
+            img.data[CANAL_ALPHA][i][j] = tmp[i + img.largeur * j].alpha;
         }
     }
 

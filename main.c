@@ -14,7 +14,7 @@ Fonction* trouveIFS(CanalImage img, const int RBsize)
 
     for(int i = 0 ; i < nbRB ; ++i)
     {
-        printf("\ndébut recherche RB (%d sur %d) : \n", i, nbRB);
+        //printf("\ndébut recherche RB (%d sur %d) : \n", i, nbRB);
         ifs[i] = trouveDB(img, rangeBlocks[i], RBsize);
     }
 
@@ -27,7 +27,7 @@ int main()
 {
     const int RBsize = 32;
 
-    const char *fichierEntree = "images/arch_logo_gris.png";
+    const char *fichierEntree = "images/arch_logo.png";
     Image img = chargeCarre(fichierEntree, RBsize);
 
     Fonction *ifsRouge = trouveIFS(extraitCanal(img, CANAL_ROUGE), RBsize);

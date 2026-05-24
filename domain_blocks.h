@@ -7,7 +7,7 @@
 typedef struct
 {
     int x, y;
-    int pente, y0;
+    double pente, y0;
 } Fonction;
 
 Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize);
