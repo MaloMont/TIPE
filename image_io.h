@@ -3,6 +3,11 @@
 
 typedef unsigned char CanalPixel;
 
+#define CANAL_ROUGE  0
+#define CANAL_VERT   1
+#define CANAL_BLEU   2
+#define CANAL_ALPHA  3
+
 typedef struct
 {
     int largeur;
@@ -25,14 +30,18 @@ typedef struct
     int hauteur;
     int nbCanaux;
 
-    Pixel** data; // --> data[x][y]
+    CanalPixel*** data; // --> data[canal][x][y]
 } Image;
 
 
 Image chargeFichier(const char* fichier);
 void sauveFichier(Image img, const char* fichier);
 void freeImage(Image *img);
-CanalImage canalRouge(Image img);
+void freeCanalImage(CanalImage *canal);
+
+Image imageVide(int largeur, int hauteur, int nbCanaux);
+CanalImage extraitCanal(Image img, int iCanal);
+void remplaceCanal(Image img, int iCanal, CanalImage canal);
 
 double** valeursZone2D(CanalImage img, int x, int y, int size);
 double* valeursZone1D(CanalImage img, int x, int y, int size);

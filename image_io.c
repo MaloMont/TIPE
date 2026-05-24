@@ -11,26 +11,43 @@
 
 Image chargeFichier(const char* fichier)
 {
-    Image img;
-	Pixel* tmp = (Pixel*)stbi_load(fichier, &img.largeur, &img.hauteur, &img.nbCanaux, 0);
-    img.data = malloc(img.largeur * sizeof(Pixel*));
+    int largeur, hauteur, nbCanaux;
+    Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 0);
+    Image img = imageVide(largeur, hauteur, nbCanaux);
+
     for(int i = 0 ; i < img.largeur ; ++i)
     {
-        img.data[i] = malloc(img.hauteur * sizeof(Pixel));
         for(int j = 0 ; j < img.hauteur ; ++j)
-            img.data[i][j] = tmp[i * img.largeur + j];
+        {
+            img.data[CANAL_ROUGE][i][j] = tmp[i * img.largeur + j].rouge;
+            img.data[CANAL_VERT][i][j]  = tmp[i * img.largeur + j].vert;
+            img.data[CANAL_BLEU][i][j]  = tmp[i * img.largeur + j].bleu;
+            img.data[CANAL_ALPHA][i][j] = tmp[i * img.largeur + j].alpha;
+        }
     }
+
     free(tmp);
     return img;
 }
 
 void sauveFichier(Image img, const char* fichier)
 {
+    if(img.nbCanaux != 4)
+    {
+        printf("l'image n'est pas au format rgb (le nombre de canaux ne colle pas).\n");
+        return;
+    }
+
     Pixel* data = malloc(img.largeur * img.hauteur * sizeof(Pixel));
 
     for(int i = 0; i < img.largeur; i++)
         for(int j = 0; j < img.hauteur; j++)
-            data[i * img.largeur + j] = img.data[i][j];
+        {
+            data[i * img.largeur + j].rouge = img.data[CANAL_ROUGE][i][j];
+            data[i * img.largeur + j].vert  = img.data[CANAL_VERT][i][j];
+            data[i * img.largeur + j].bleu  = img.data[CANAL_BLEU][i][j];
+            data[i * img.largeur + j].alpha = img.data[CANAL_ALPHA][i][j];
+        }
 
     stbi_write_bmp(fichier, img.largeur, img.hauteur, img.nbCanaux, data);
 
@@ -39,24 +56,68 @@ void sauveFichier(Image img, const char* fichier)
 
 void freeImage(Image *img)
 {
-    for(int i = 0; i < img->largeur; i++)
-        free(img->data[i]);
+    for(int c = 0 ; c < img->nbCanaux ; ++c)
+    {
+        for(int i = 0; i < img->largeur; i++)
+            free(img->data[c][i]);
+        free(img->data[c]);
+    }
 
     free(img->data);
 }
 
-CanalImage canalRouge(Image img)
+void freeCanalImage(CanalImage *canal)
 {
-    CanalImage rouge = { img.largeur, img.hauteur, malloc(img.largeur * sizeof(CanalPixel*)) };
+    for(int i = 0; i < canal->largeur; i++)
+        free(canal->data[i]);
+
+    free(canal->data);
+}
+
+
+Image imageVide(int largeur, int hauteur, int nbCanaux)
+{
+    CanalPixel ***data = malloc(nbCanaux * sizeof(CanalPixel**));
+    for(int c = 0 ; c < nbCanaux ; ++c)
+    {
+        data[c] = malloc(largeur * sizeof(CanalPixel*));
+        for(int i = 0 ; i < largeur ; ++i)
+            data[c][i] = calloc(hauteur, sizeof(CanalPixel));
+    }
+
+    Image img = (Image){
+        largeur,
+        hauteur,
+        nbCanaux,
+        data
+    };
+
+    return img;
+}
+
+void remplaceCanal(Image img, int iCanal, CanalImage canal)
+{
+    for(int i = 0 ; i < img.largeur ; ++i)
+    {
+        for(int j = 0 ; j < img.hauteur ; ++j)
+        {
+            img.data[iCanal][i][j] = canal.data[i][j];
+        }
+    }
+}
+
+CanalImage extraitCanal(Image img, int iCanal)
+{
+    CanalImage canal = { img.largeur, img.hauteur, malloc(img.largeur * sizeof(CanalPixel*)) };
 
     for(int i = 0 ; i < img.largeur ; ++i)
     {
-        rouge.data[i] = malloc(img.hauteur * sizeof(CanalPixel));
+        canal.data[i] = malloc(img.hauteur * sizeof(CanalPixel));
         for(int j = 0 ; j < img.hauteur ; ++j)
-            rouge.data[i][j] = img.data[i][j].rouge;
+            canal.data[i][j] = img.data[iCanal][i][j];
     }
 
-    return rouge;
+    return canal;
 }
 
 /* extrait de img le carré de size * size commençant en (x, y)

@@ -1,5 +1,8 @@
 #include "decompression.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+
 void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
 {
     CanalImage aux;
@@ -13,14 +16,17 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
         for(int y = 0; y<aux.hauteur; y++)
         {
             int i = x/sizeRB + (y/sizeRB)*(canal->largeur/sizeRB);
+            printf("(%d, %d)[RB %d] size: %d ; largeur: %d\n", x, y, i, sizeRB, canal->largeur);
             aux.data[x][y] = ifs[i].pente * canal->data[x + ifs[i].x][y + ifs[i].y] + ifs[i].y0;
         }
 
-    libereTableau2D(canal->data);
+    for(int i = 0 ; i < canal->largeur ; ++i)
+        free(canal->data[i]);
+    free(canal->data);
 
     canal->data = redimensionneZone(aux.data, 2*sizeRB, sizeRB);
 
-    libereTableau2D(aux.data);
+    freeCanalImage(&aux);
 }
 
 CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter)
@@ -37,13 +43,14 @@ CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int lar
 
     for(int i = 0; i<nbIter; i ++)
     {
+        printf("itération %d sur %d.\n", i+1, nbIter);
         iter(ifs, &canal, sizeRB);
     }
 
     return canal;
 }
 
-Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter)
+Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int largeur, const int hauteur, const int nbCanaux, const int nbIter)
 {
     Image img;
     img.nbCanaux = 4;
@@ -53,19 +60,17 @@ Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int larg
     for(int i = 0; i<largeur; i++)
         img.data[i] = malloc(hauteur * sizeof(Pixel));
 
-    CanalImage rouge = decompresseCanal(tabifs[0], sizeRB, hauteur, largeur, nbIter);
-    CanalImage vert = decompresseCanal(tabifs[1], sizeRB, hauteur, largeur, nbIter);
-    CanalImage bleu = decompresseCanal(tabifs[2], sizeRB, hauteur, largeur, nbIter);
-    CanalImage alpha = decompresseCanal(tabifs[3], sizeRB, hauteur, largeur, nbIter);
+    CanalImage *canaux = malloc(nbCanaux * sizeof(CanalImage));
+    for(int i = 0 ; i < nbCanaux ; ++i)
+        canaux[i] = decompresseCanal(tabifs[i], sizeRB, hauteur, largeur, nbIter);
 
-    for(int x = 0; x<largeur, x++)
-        for(int y = 0; y<hauteur; y++)
-            img.data[x][y] = {rouge.data[x][y], vert.data[x][y], bleu.data[x][y], alpha.data[x][y]};
+    for(int c = 0 ; c < nbCanaux ; ++c)
+        for(int x = 0; x<largeur ; x++)
+            for(int y = 0; y<hauteur; y++)
+                img.data[c][x][y] = canaux[c].data[x][y];
 
-    libereTableau2D(rouge.data);
-    libereTableau2D(vert.data);
-    libereTableau2D(bleu.data);
-    libereTableau2D(alpha.data);
+    for(int c = 0 ; c < nbCanaux ; ++c)
+        freeCanalImage(&canaux[c]);
 
     return img;
 }
