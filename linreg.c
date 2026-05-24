@@ -1,91 +1,52 @@
 /**
- * borrowed from emreerdin (https://github.com/emreerdin/SimpleLinearRegressioninC/tree/main)
- * under MIT licence
+ * adapté d'un code par emreerdin (https://github.com/emreerdin/SimpleLinearRegressioninC/tree/main)
+ * (MIT licence)
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct{
-	
-	double x;
-	double y;
-} DataSet;
-
-double CalculateXMean(DataSet dataSet[], int length);
-double CalculateYMean(DataSet dataSet[], int length);
-double CalculateSlope(DataSet dataSet[], int length, double xMean, double yMean);
+double CalculateMean(const double *coords, int length);
+double CalculateSlope(const double *x, const double *y, int length, double xMean, double yMean);
 double CalculateIntercept(double slope, double xMean, double yMean);
-double MeanSquaredError(DataSet dataSet[], int length, double slope, double intercept);
-
-DataSet* convertieEnDataSet(const double x[], const double y[], int nbPoints)
-{
-    DataSet *data = malloc(nbPoints * sizeof(DataSet));
-
-    for(int i = 0 ; i < nbPoints ; ++i)
-        data[i] = (DataSet){x[i], y[i]};
-
-    return data;
-}
+double MeanSquaredError(const double *x, const double *y, int length, double slope, double intercept);
 
 int linreg(int nbPoints, const double x[], const double y[], double *pente, double *y0, double *error)
 {
-	DataSet *dataSet = convertieEnDataSet(x, y, nbPoints);
+	double xMean = CalculateMean(x, nbPoints);
+    double yMean = CalculateMean(y, nbPoints);
 
-	double xMean = CalculateXMean(dataSet, nbPoints);
-    double yMean = CalculateYMean(dataSet, nbPoints);
-
-    *pente = CalculateSlope(dataSet, nbPoints, xMean, yMean);
+    *pente = CalculateSlope(x, y, nbPoints, xMean, yMean);
 	*y0 = CalculateIntercept(*pente, xMean, yMean);
-    *error = MeanSquaredError(dataSet, nbPoints, *pente, *y0);
-
-	free(dataSet);
+    *error = MeanSquaredError(x, y, nbPoints, *pente, *y0);
 
 	return 0;
 }
 
-double CalculateXMean(DataSet dataSet[], int length){
-	
+double CalculateMean(const double *coords, int length)
+{
 	double sum = 0;
 	int i;
 	
-	for(i=0; i<length; i++){
-		
-		sum += dataSet[i].x;
-		
-	}
-	
+	for(i=0; i<length; i++)		
+		sum += coords[i];
+
 	return sum/length;	
 }
 
-double CalculateYMean(DataSet dataSet[], int length){
-	
-	double sum = 0;
-	int i;
-	
-	for(i=0; i<length; i++){
-		
-		sum += dataSet[i].y;
-		
-	}
-	
-	return sum/length;
-}
 
-
-double CalculateSlope(DataSet dataSet[], int length, double xMean, double yMean){
-	
-	
+double CalculateSlope(const double *x, const double *y, int length, double xMean, double yMean)
+{
 	double nom = 0;
 	double den = 0;
 	int i;
 	
-	for(i=0; i<length; i++){
-		
-		nom += (dataSet[i].x - xMean) * (dataSet[i].y - yMean);
-		den += (dataSet[i].x - xMean) * (dataSet[i].x - xMean);
+	for(i=0; i<length; i++)
+	{
+		nom += (x[i] - xMean) * (y[i] - yMean);
+		den += (x[i] - xMean) * (x[i] - xMean);
 	}
-	
+
     if(den == 0)
         return 0.;
 
@@ -93,14 +54,13 @@ double CalculateSlope(DataSet dataSet[], int length, double xMean, double yMean)
 }
 
 
-double CalculateIntercept(double slope, double xMean, double yMean){
-	
-	return yMean - (slope * xMean);
-	
+double CalculateIntercept(double slope, double xMean, double yMean)
+{	
+	return yMean - (slope * xMean);	
 }
 
 
-double MeanSquaredError(DataSet dataSet[], int length, double slope, double intercept)
+double MeanSquaredError(const double *x, const double *y, int length, double slope, double intercept)
 {
 	double sum = 0;
 	int i;
@@ -109,19 +69,11 @@ double MeanSquaredError(DataSet dataSet[], int length, double slope, double inte
 
     for(i=0; i<length; i++)
     {
-		yPred = (slope*dataSet[i].x) + intercept;
-		error = dataSet[i].y - yPred;
+		yPred = (slope * x[i]) + intercept;
+		error = y[i] - yPred;
 		sum += error * error;
 	}
 
 	return sum/length;
 }
-
-
-
-
-
-
-
-
 
