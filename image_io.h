@@ -47,6 +47,7 @@ void remplaceCanal(Image img, int iCanal, CanalImage canal);
 double** valeursZone2D(CanalImage img, int x, int y, int size);
 double* valeursZone1D(CanalImage img, int x, int y, int size);
 CanalPixel** redimensionneZone(CanalPixel** zone, int ancienneTaille, int nouvelleTaille);
+CanalPixel** redimensionneZoneRectangle(CanalPixel** zone, int largeur, int hauteur);
 void redimensionneEnPlace2D(double** zone, int ancienneTaille, int nouvelleTaille);
 void redimensionneEnPlace1D(double* zone, int L, int nouvelleTaille);
 
