@@ -190,7 +190,7 @@ CanalPixel** redimensionneZone(CanalPixel** zone, int ancienneTaille, int nouvel
         return NULL;
     }
 
-    CanalPixel **nouvelleZone = malloc(ancienneTaille * sizeof(CanalPixel*));
+    CanalPixel **nouvelleZone = malloc(nouvelleTaille * sizeof(CanalPixel*));
 
     for(int i = 0 ; i < nouvelleTaille ; ++i)
     {
