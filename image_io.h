@@ -34,6 +34,7 @@ typedef struct
 } Image;
 
 
+Image chargeCarre(const char* fichier, int RBsize);
 Image chargeFichier(const char* fichier);
 void sauveFichier(Image img, const char* fichier);
 void freeImage(Image *img);

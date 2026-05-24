@@ -29,6 +29,29 @@ Image imageVide(int largeur, int hauteur, int nbCanaux)
     return img;
 }
 
+Image chargeCarre(const char* fichier, int RBsize)
+{
+    int largeur, hauteur, nbCanaux;
+    Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 0);
+    int largeurArrondie = largeur + RBsize - largeur % RBsize;
+    int hauteurArrondie = hauteur + RBsize - largeur % RBsize;
+    Image img = imageVide(largeurArrondie, hauteurArrondie, nbCanaux);
+
+    for(int i = 0 ; i < largeur ; ++i)
+    {
+        for(int j = 0 ; j < hauteur ; ++j)
+        {
+            img.data[CANAL_ROUGE][i][j] = tmp[i * img.largeur + j].rouge;
+            img.data[CANAL_VERT][i][j]  = tmp[i * img.largeur + j].vert;
+            img.data[CANAL_BLEU][i][j]  = tmp[i * img.largeur + j].bleu;
+            img.data[CANAL_ALPHA][i][j] = tmp[i * img.largeur + j].alpha;
+        }
+    }
+
+    free(tmp);
+    return img;
+}
+
 Image chargeFichier(const char* fichier)
 {
     int largeur, hauteur, nbCanaux;
