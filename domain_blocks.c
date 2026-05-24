@@ -37,7 +37,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     Fonction fonction = {0, 0, 0, 0};
     double bestEcart = 1000000.;
 
-    int pas = 4;
+    int pas = 1;
 
     for(int xDB = 0 ; xDB + DBsize < img.largeur ; xDB += pas)
     {
@@ -64,13 +64,11 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
             if(ecart == 0)
             {
                 free(valeursRB);
-                printf("%d %d %f %f\n", fonction.x, fonction.y, fonction.pente, fonction.y0);
                 return fonction;
             }
         }
     }    
 
     free(valeursRB);
-    printf("%d %d %f %f\n", fonction.x, fonction.y, fonction.pente, fonction.y0);
     return fonction;
 }

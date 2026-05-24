@@ -50,15 +50,19 @@ CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int lar
     return canal;
 }
 
+//Ne marche pas
 Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int largeur, const int hauteur, const int nbCanaux, const int nbIter)
 {
     Image img;
     img.nbCanaux = 4;
     img.hauteur = hauteur;
     img.largeur = largeur;
-    img.data = malloc(largeur * sizeof(Pixel*));
-    for(int i = 0; i<largeur; i++)
-        img.data[i] = malloc(hauteur * sizeof(Pixel));
+    img.data = malloc(4 * sizeof(CanalPixel**));
+    for(int c = 0; c<nbCanaux; c++){
+        img.data[c] = malloc(largeur * sizeof(CanalPixel*));
+        for(int j = 0; j<largeur; j++)
+            img.data[c][j] = calloc(hauteur, sizeof(CanalPixel));
+    }
 
     CanalImage *canaux = malloc(nbCanaux * sizeof(CanalImage));
     for(int i = 0 ; i < nbCanaux ; ++i)
@@ -71,6 +75,9 @@ Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int larg
 
     for(int c = 0 ; c < nbCanaux ; ++c)
         freeCanalImage(&canaux[c]);
-
+    if(nbCanaux < 4)
+        for(int x = 0; x<largeur ; x++)
+            for(int y = 0; y<hauteur; y++)
+                img.data[3][x][y] = (CanalPixel)255;
     return img;
 }
