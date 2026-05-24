@@ -46,7 +46,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
             double *valeursDB = valeursZone1D(img, xDB, yDB, DBsize);
             redimensionneEnPlace1D(valeursDB, DBsize, RBsize);
 
-            double ecart = bestEcart + 1., pente = 0, y0 = 0;
+            double ecart = bestEcart + 1., pente = 0., y0 = 0.;
             if(linreg(RBsize * RBsize, valeursDB, valeursRB, &pente, &y0, &ecart) != 0)
                 printf("WARNING: la régression linéaire a levé une erreur.\n");
 

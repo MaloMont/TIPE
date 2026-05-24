@@ -16,7 +16,7 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
         for(int y = 0; y<aux.hauteur; y++)
         {
             int i = (x/2)/sizeRB + ((y/2)/sizeRB)*(canal->largeur/sizeRB);
-            printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
+            //printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
             aux.data[x][y] = (CanalPixel)(double) ifs[i].pente * canal->data[(x/2) + ifs[i].x][(y/2) + ifs[i].y] + ifs[i].y0;
         }
 
