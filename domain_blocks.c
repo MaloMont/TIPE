@@ -31,32 +31,26 @@ void libereTableau2D(CanalPixel **T, int largeur)
 Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
 {
     printf("searching for RB (%d %d, %d %d)", cible.x, cible.y, cible.x + RBsize, cible.y + RBsize);
-    CanalPixel **pixelsRB = pixelsZone(img, cible.x, cible.y, RBsize);
-    double *valeursRB = convertitTableau(pixelsRB, RBsize, RBsize);
-    libereTableau2D(pixelsRB, RBsize);
+    double *valeursRB = valeursZone1D(img, cible.x, cible.y, RBsize);
 
     int DBsize = 2 * RBsize;
     Fonction fonction = {0, 0, 0, 0};
-    double bestError = 0;
+    double bestEcart = 0;
 
     for(int xDB = 0 ; xDB + DBsize < img.largeur ; ++xDB)
     {
         for(int yDB = 0 ; yDB + DBsize < img.hauteur ; ++yDB)
         {
-            // TODO: pas opti
-            CanalPixel **pixelsDB = pixelsZone(img, xDB, yDB, DBsize);
-            CanalPixel **pixelsDBredim = redimensionneZone(pixelsDB, DBsize, RBsize);
-            double *valeursDB = convertitTableau(pixelsDBredim, RBsize, RBsize);
-            libereTableau2D(pixelsDB, DBsize);
-            libereTableau2D(pixelsDBredim, RBsize);
+            double *valeursDB = valeursZone1D(img, xDB, yDB, DBsize);
+            redimensionneEnPlace1D(valeursDB, DBsize, RBsize);
 
-            double error = 0, pente = 0, y0 = 0;
-            if( linreg(RBsize * RBsize, valeursDB, valeursRB, &pente, &y0, &error) != 0)
+            double ecart = 0, pente = 0, y0 = 0;
+            if(linreg(RBsize * RBsize, valeursDB, valeursRB, &pente, &y0, &ecart) != 0)
                 printf("WARNING: la régression linéaire a levé une erreur.\n");
 
-            else if(error < bestError)
+            else if(ecart < bestEcart)
             {
-                bestError = error;
+                bestEcart = ecart;
                 fonction.x = xDB - cible.x;
                 fonction.y = yDB - cible.y;
                 fonction.pente = pente;
@@ -65,7 +59,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
 
             free(valeursDB);
 
-            if(error == 0)
+            if(ecart == 0)
             {
                 free(valeursRB);
                 return fonction;

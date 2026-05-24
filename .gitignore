@@ -1,3 +1,5 @@
 images/**
 exe
 *.o
+gmon.out
+analyse.txt

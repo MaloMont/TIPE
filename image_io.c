@@ -59,17 +59,34 @@ CanalImage canalRouge(Image img)
     return rouge;
 }
 
-/* extrait de img le carré de size * size commençant en (x, y) */
-CanalPixel** pixelsZone(CanalImage img, int x, int y, int size)
+/* extrait de img le carré de size * size commençant en (x, y)
+ * le place directement dans un tableau de double
+ */
+double** valeursZone2D(CanalImage img, int x, int y, int size)
 {
-    CanalPixel **pixels = malloc(size * sizeof(CanalPixel*));
+    double **pixels = malloc(size * sizeof(double*));
 
     for(int i = 0 ; i < size ; ++i)
     {
-        pixels[i] = malloc(size * sizeof(CanalPixel));
+        pixels[i] = malloc(size * sizeof(double));
         for(int j = 0 ; j < size ; ++j)
             pixels[i][j] = img.data[i + x][j + y];
     }
+
+    return pixels;
+}
+
+
+/* extrait de img le carré de size * size commençant en (x, y)
+ * le place directement dans un tableau de double
+ */
+double* valeursZone1D(CanalImage img, int x, int y, int size)
+{
+    double *pixels = malloc(size * size * sizeof(double*));
+
+    for(int i = 0 ; i < size ; ++i)
+        for(int j = 0 ; j < size ; ++j)
+            pixels[i + size*j] = img.data[i + x][j + y];
 
     return pixels;
 }
@@ -96,4 +113,51 @@ CanalPixel** redimensionneZone(CanalPixel** zone, int ancienneTaille, int nouvel
     }
 
     return nouvelleZone;
+}
+
+
+/* divise la taille de la zone par 2
+ * le résultat se retrouve dans le carré L/2 L/2 en haut à gauche du carré de départ
+ * le reste est laissé tel quel
+ */
+void redimensionneEnPlace2D(double** zone, int ancienneTaille, int nouvelleTaille)
+{
+    if( nouvelleTaille * 2 != ancienneTaille )
+    {
+        printf("ERREUR : une zone de pixels ne peut être redimensionnée que par un facteur 1/2.\n");
+        return;
+    }
+
+    for(int i = 0 ; i < nouvelleTaille ; ++i)
+    {
+        for(int j = 0 ; j < nouvelleTaille ; ++j)
+        {
+            zone[i][j] = (zone[i * 2][j * 2] + zone[i * 2 + 1][j * 2]
+                        + zone[i * 2][j * 2 + 1] + zone[i * 2 + 1][j * 2 + 1])
+                        / 4;
+        }
+    }
+}
+
+/* divise la taille de la zone par 2
+ * le résultat se retrouve dans le carré L/2 L/2 en haut à gauche du carré de départ
+ * le reste est laissé tel quel
+ */
+void redimensionneEnPlace1D(double* zone, int L, int nouvelleTaille)
+{
+    if( nouvelleTaille * 2 != L )
+    {
+        printf("ERREUR : une zone de pixels ne peut être redimensionnée que par un facteur 1/2.\n");
+        return;
+    }
+
+    for(int i = 0 ; i < nouvelleTaille ; ++i)
+    {
+        for(int j = 0 ; j < nouvelleTaille ; ++j)
+        {
+            zone[i + j*L] = (zone[i * 2 + j * 2 * L] + zone[i * 2 + 1 + j * 2 * L]
+                        + zone[i * 2 + (j * 2 + 1)*L] + zone[i * 2 + 1 + (j * 2 + 1)*L])
+                        / 4;
+        }
+    }
 }
