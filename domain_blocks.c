@@ -37,14 +37,16 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     Fonction fonction = {0, 0, 0, 0};
     double bestEcart = 1000000.;
 
-    for(int xDB = 0 ; xDB + DBsize < img.largeur ; ++xDB)
+    int pas = 4;
+
+    for(int xDB = 0 ; xDB + DBsize < img.largeur ; xDB += pas)
     {
-        for(int yDB = 0 ; yDB + DBsize < img.hauteur ; ++yDB)
+        for(int yDB = 0 ; yDB + DBsize < img.hauteur ; yDB += pas)
         {
             double *valeursDB = valeursZone1D(img, xDB, yDB, DBsize);
             redimensionneEnPlace1D(valeursDB, DBsize, RBsize);
 
-            double ecart = 0, pente = 0, y0 = 0;
+            double ecart = bestEcart + 1., pente = 0, y0 = 0;
             if(linreg(RBsize * RBsize, valeursDB, valeursRB, &pente, &y0, &ecart) != 0)
                 printf("WARNING: la régression linéaire a levé une erreur.\n");
 
