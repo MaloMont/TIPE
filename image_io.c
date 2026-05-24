@@ -205,6 +205,24 @@ CanalPixel** redimensionneZone(CanalPixel** zone, int ancienneTaille, int nouvel
     return nouvelleZone;
 }
 
+CanalPixel** redimensionneZoneRectangle(CanalPixel** zone, int largeur, int hauteur)
+{
+    int nl = largeur / 2;
+    int nh = hauteur / 2;
+    CanalPixel **nouvelleZone = malloc(nl * sizeof(CanalPixel*));
+
+    for(int i = 0 ; i < nl ; ++i)
+    {
+        nouvelleZone[i] = malloc(nh * sizeof(CanalPixel));
+        for(int j = 0 ; j < nh ; ++j)
+        {
+            nouvelleZone[i][j] = (zone[i * 2][j * 2] + zone[i * 2 + 1][j * 2]
+                                + zone[i * 2][j * 2 + 1] + zone[i * 2 + 1][j * 2 + 1]) / 4;
+        }
+    }
+
+    return nouvelleZone;
+}
 
 /* divise la taille de la zone par 2
  * le résultat se retrouve dans le carré L/2 L/2 en haut à gauche du carré de départ
