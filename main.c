@@ -5,16 +5,16 @@
 #include "range_blocks.h"
 #include "domain_blocks.h"
 #include "decompression.h"
+#include "IFS.h"
 
-Fonction* trouveIFS(CanalImage img, const int RBsize)
+Fonction* trouveIFS(CanalImage img, const int RBsize, int *nbRB)
 {
-    int nbRB = 0;
-    RangeBlock *rangeBlocks = trouveRBs(img, RBsize, &nbRB);
-    Fonction *ifs = malloc(nbRB * sizeof(Fonction));
+    RangeBlock *rangeBlocks = trouveRBs(img, RBsize, nbRB);
+    Fonction *ifs = malloc((*nbRB) * sizeof(Fonction));
 
-    for(int i = 0 ; i < nbRB ; ++i)
+    for(int i = 0 ; i < (*nbRB) ; ++i)
     {
-        printf("\ndébut recherche RB (%d sur %d) : \n", i+1, nbRB);
+        printf("\ndébut recherche RB (%d sur %d) : \n", i+1, *nbRB);
         ifs[i] = trouveDB(img, rangeBlocks[i], RBsize);
     }
 
@@ -23,36 +23,46 @@ Fonction* trouveIFS(CanalImage img, const int RBsize)
     return ifs;
 }
 
-int main()
+IFS compresseImage(const char* fichierEntree)
 {
     const int RBsize = 4;
-    const int nbIter = 100;
 
-    const char *fichierEntree = "images/arch_logo.png";
     Image img = chargeCarre(fichierEntree, RBsize);
+    
+    int nbFonctions;
+    int nbCanaux = 3;
+    
+    IFS ifs = {img.largeur, img.hauteur, 0, nbCanaux, RBsize, malloc(nbCanaux * sizeof(Fonction*))};
 
-    Fonction *ifsRouge = trouveIFS(extraitCanal(img, CANAL_ROUGE), RBsize);
-    Fonction *ifsVert = trouveIFS(extraitCanal(img, CANAL_VERT), RBsize);
-    Fonction *ifsBleu = trouveIFS(extraitCanal(img, CANAL_BLEU), RBsize);
+    ifs.fs[0] = trouveIFS(extraitCanal(img, CANAL_ROUGE), RBsize, &nbFonctions);
+    ifs.fs[1] = trouveIFS(extraitCanal(img, CANAL_VERT), RBsize, &nbFonctions);
+    ifs.fs[2] = trouveIFS(extraitCanal(img, CANAL_BLEU), RBsize, &nbFonctions);
+    ifs.nbFonctions = nbFonctions;
 
-    printf(" \n=======================\n ");
-    printf(" = début décompression =\n ");
-    printf(" =======================\n ");
+    freeImage(&img);
 
-    const Fonction **tabifs = malloc(3 * sizeof(Fonction*));
-    tabifs[0] = ifsRouge;
-    tabifs[1] = ifsVert;
-    tabifs[2] = ifsBleu;
-    Image reconstruite = decompresseImage(tabifs, RBsize, img.largeur, img.hauteur, 3, nbIter);
+    return ifs;
+}
+
+int main()
+{
+    const int nbIter = 100;
+    const char *fichierEntree = "images/arch_logo.png";
+
+    IFS ifs = compresseImage(fichierEntree);
+    encodeIFS("save.ifs", ifs);
+
+    printf("\n=======================\n ");
+    printf("= début décompression =\n ");
+    printf("=======================\n ");
+
+    IFS alt = decodeIFS("save.ifs");
+
+    Image reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
 
     const char *fichierSortie = "images/created.bmp";
     sauveFichier(reconstruite, fichierSortie);
 
-    free(tabifs);
-    free(ifsRouge);
-    free(ifsBleu);
-    free(ifsVert);
-    freeImage(&img);
     freeImage(&reconstruite);
 
     printf("fin.\n");

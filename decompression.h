@@ -5,6 +5,6 @@
 #include "domain_blocks.h"
 
 CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter);
-Image decompresseImage(const Fonction** tabifs, const int RBsize, const int largeur, const int hauteur, const int nbCanaux, const int nbIter);
+Image decompresseImage(Fonction** tabifs, const int RBsize, const int largeur, const int hauteur, const int nbCanaux, const int nbIter);
 
 #endif

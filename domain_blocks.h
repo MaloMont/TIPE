@@ -3,12 +3,7 @@
 
 #include "image_io.h"
 #include "range_blocks.h"
-
-typedef struct
-{
-    int x, y;
-    double pente, y0;
-} Fonction;
+#include "IFS.h"
 
 Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize);
 

@@ -50,7 +50,7 @@ CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int lar
     return canal;
 }
 
-Image decompresseImage(const Fonction** tabifs, const int RBsize, const int largeur, const int hauteur, const int nbCanaux, const int nbIter)
+Image decompresseImage(Fonction** tabifs, const int RBsize, const int largeur, const int hauteur, const int nbCanaux, const int nbIter)
 {
     Image img = imageVide(largeur, hauteur, 4);
     for(int i = 0; i<nbCanaux; i++){
