@@ -27,6 +27,20 @@ void libereTableau2D(CanalPixel **T, int largeur)
     free(T);
 }
 
+double *combiValeursRedim(CanalImage img, int x, int y, int RBsize)
+{
+    double *pixels = malloc(RBsize * RBsize * sizeof(double*));
+
+    for(int i = 0 ; i < RBsize ; ++i)
+        for(int j = 0 ; j < RBsize ; ++j)
+        {
+            pixels[i + RBsize*j] = (img.data[2 * i + x][2 * j + y] + img.data[2 * i + x][2 * j + 1 + y] 
+                                    + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y])/4;
+        }
+    
+    return pixels;
+}
+
 /* ça se voit */
 Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
 {
@@ -43,8 +57,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     {
         for(int yDB = 0 ; yDB + DBsize < img.hauteur ; yDB += pas)
         {
-            double *valeursDB = valeursZone1D(img, xDB, yDB, DBsize);
-            redimensionneEnPlace1D(valeursDB, DBsize, RBsize);
+            double *valeursDB = combiValeursRedim(img, xDB, yDB, RBsize);
 
             double ecart = bestEcart + 1., pente = 0., y0 = 0.;
             if(linreg(RBsize * RBsize, valeursDB, valeursRB, &pente, &y0, &ecart) != 0)
