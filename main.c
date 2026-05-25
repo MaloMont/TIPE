@@ -39,22 +39,20 @@ int main()
     printf(" = début décompression =\n ");
     printf(" =======================\n ");
 
-    Image reconstruite = imageVide(img.largeur, img.hauteur, img.nbCanaux);
-    CanalImage reconstruiteRouge = decompresseCanal(ifsRouge, RBsize, img.largeur, img.hauteur, nbIter);
-    remplaceCanal(reconstruite, CANAL_ROUGE, reconstruiteRouge);
-    CanalImage reconstruiteV = decompresseCanal(ifsVert, RBsize, img.largeur, img.hauteur, nbIter);
-    remplaceCanal(reconstruite, CANAL_VERT, reconstruiteV);
-    CanalImage reconstruiteB = decompresseCanal(ifsBleu, RBsize, img.largeur, img.hauteur, nbIter);
-    remplaceCanal(reconstruite, CANAL_BLEU, reconstruiteB);
+    const Fonction **tabifs = malloc(3 * sizeof(Fonction*));
+    tabifs[0] = ifsRouge;
+    tabifs[1] = ifsVert;
+    tabifs[2] = ifsBleu;
+    Image reconstruite = decompresseImage(tabifs, RBsize, img.largeur, img.hauteur, 3, nbIter);
 
     const char *fichierSortie = "images/created.bmp";
     sauveFichier(reconstruite, fichierSortie);
 
+    free(tabifs);
     free(ifsRouge);
     free(ifsBleu);
     free(ifsVert);
     freeImage(&img);
-    freeCanalImage(&reconstruiteRouge);
     freeImage(&reconstruite);
 
     printf("fin.\n");

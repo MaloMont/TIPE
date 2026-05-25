@@ -50,34 +50,19 @@ CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int lar
     return canal;
 }
 
-//Ne marche pas
-Image decompresseImage(const Fonction** tabifs, const int sizeRB, const int largeur, const int hauteur, const int nbCanaux, const int nbIter)
+Image decompresseImage(const Fonction** tabifs, const int RBsize, const int largeur, const int hauteur, const int nbCanaux, const int nbIter)
 {
-    Image img;
-    img.nbCanaux = 4;
-    img.hauteur = hauteur;
-    img.largeur = largeur;
-    img.data = malloc(4 * sizeof(CanalPixel**));
-    for(int c = 0; c<nbCanaux; c++){
-        img.data[c] = malloc(largeur * sizeof(CanalPixel*));
-        for(int j = 0; j<largeur; j++)
-            img.data[c][j] = calloc(hauteur, sizeof(CanalPixel));
+    Image img = imageVide(largeur, hauteur, 4);
+    for(int i = 0; i<nbCanaux; i++){
+        CanalImage reconstruite = decompresseCanal(tabifs[i], RBsize, largeur, hauteur, nbIter);
+        remplaceCanal(img, i, reconstruite);
+        freeCanalImage(&reconstruite);
     }
 
-    CanalImage *canaux = malloc(nbCanaux * sizeof(CanalImage));
-    for(int i = 0 ; i < nbCanaux ; ++i)
-        canaux[i] = decompresseCanal(tabifs[i], sizeRB, hauteur, largeur, nbIter);
-
-    for(int c = 0 ; c < nbCanaux ; ++c)
-        for(int x = 0; x<largeur ; x++)
+    for(int i = nbCanaux; i<4; i++)
+        for(int x = 0; x<largeur; x++)
             for(int y = 0; y<hauteur; y++)
-                img.data[c][x][y] = canaux[c].data[x][y];
-
-    for(int c = 0 ; c < nbCanaux ; ++c)
-        freeCanalImage(&canaux[c]);
-    if(nbCanaux < 4)
-        for(int x = 0; x<largeur ; x++)
-            for(int y = 0; y<hauteur; y++)
-                img.data[3][x][y] = (CanalPixel)255;
+                img.data[i][x][y] = 255;
+    
     return img;
 }
