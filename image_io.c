@@ -34,14 +34,14 @@ Image imageVide(int largeur, int hauteur, int nbCanaux)
 Image chargeCarre(const char* fichier, int RBsize)
 {
     int largeur, hauteur, nbCanaux;
-    Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 0);
+    Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 4);
 
     printf("l : %d, h : %d\n", largeur, hauteur);
 
     int largeurArrondie = largeur + RBsize - (largeur % RBsize);
     int hauteurArrondie = hauteur + RBsize - (hauteur % RBsize);
     
-    Image img = imageVide(largeurArrondie, hauteurArrondie, nbCanaux);
+    Image img = imageVide(largeurArrondie, hauteurArrondie, 4);
 
     for(int i = 0 ; i < largeur ; ++i)
     {

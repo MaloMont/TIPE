@@ -25,7 +25,7 @@ Fonction* trouveIFS(CanalImage img, const int RBsize)
 
 int main()
 {
-    const int RBsize = 5;
+    const int RBsize = 32;
     const int nbIter = 100;
 
     const char *fichierEntree = "images/arch_logo.png";
