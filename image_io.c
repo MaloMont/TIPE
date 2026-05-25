@@ -92,10 +92,10 @@ void sauveFichier(Image img, const char* fichier)
     for(int i = 0; i < img.largeur; i++)
         for(int j = 0; j < img.hauteur; j++)
         {
-            data[i * img.largeur + j].rouge = img.data[CANAL_ROUGE][i][j];
-            data[i * img.largeur + j].vert  = img.data[CANAL_VERT][i][j];
-            data[i * img.largeur + j].bleu  = img.data[CANAL_BLEU][i][j];
-            data[i * img.largeur + j].alpha = img.data[CANAL_ALPHA][i][j];
+            data[i + img.largeur * j].rouge = img.data[CANAL_ROUGE][i][j];
+            data[i + img.largeur * j].vert  = img.data[CANAL_VERT][i][j];
+            data[i + img.largeur * j].bleu  = img.data[CANAL_BLEU][i][j];
+            data[i + img.largeur * j].alpha = img.data[CANAL_ALPHA][i][j];
         }
 
     stbi_write_bmp(fichier, img.largeur, img.hauteur, img.nbCanaux, data);

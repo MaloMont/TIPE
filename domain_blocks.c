@@ -51,7 +51,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     Fonction fonction = {0, 0, 0, 0};
     double bestEcart = 1000000.;
 
-    int pas = 8;
+    int pas = 1;
 
     for(int xDB = 0 ; xDB + DBsize < img.largeur ; xDB += pas)
     {
