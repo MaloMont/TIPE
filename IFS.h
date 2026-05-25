@@ -18,5 +18,6 @@ typedef struct
 
 void encodeIFS(char *nomFichier, const IFS ifs);
 IFS decodeIFS(char *nomFichier);
+void freeIFS(IFS ifs);
 
 #endif

@@ -66,3 +66,10 @@ IFS decodeIFS(char *nomFichier)
 
     return resultat;
 }
+
+void freeIFS(IFS ifs)
+{
+    for(int c = 0 ; c < ifs.nbCanaux ; ++c)
+        free(ifs.fs[c]);
+    free(ifs.fs);
+}

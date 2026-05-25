@@ -31,12 +31,21 @@ IFS compresseImage(const char* fichierEntree)
     
     int nbFonctions;
     int nbCanaux = 3;
-    
+
     IFS ifs = {img.largeur, img.hauteur, 0, nbCanaux, RBsize, malloc(nbCanaux * sizeof(Fonction*))};
 
-    ifs.fs[0] = trouveIFS(extraitCanal(img, CANAL_ROUGE), RBsize, &nbFonctions);
-    ifs.fs[1] = trouveIFS(extraitCanal(img, CANAL_VERT), RBsize, &nbFonctions);
+    CanalImage canal = extraitCanal(img, CANAL_ROUGE);
+    ifs.fs[0] = trouveIFS(canal, RBsize, &nbFonctions);
+    freeCanalImage(&canal);
+
+    canal = extraitCanal(img, CANAL_VERT);
+    ifs.fs[1] = trouveIFS(canal, RBsize, &nbFonctions);
+    freeCanalImage(&canal);
+
+    canal = extraitCanal(img, CANAL_BLEU);
     ifs.fs[2] = trouveIFS(extraitCanal(img, CANAL_BLEU), RBsize, &nbFonctions);
+    freeCanalImage(&canal);
+
     ifs.nbFonctions = nbFonctions;
 
     freeImage(&img);
@@ -64,6 +73,8 @@ int main()
     sauveFichier(reconstruite, fichierSortie);
 
     freeImage(&reconstruite);
+    freeIFS(ifs);
+    freeIFS(alt);
 
     printf("fin.\n");
 }
