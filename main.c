@@ -55,7 +55,7 @@ IFS compresseImage(const char* fichierEntree)
 
 int main()
 {
-    const int nbIter = 100;
+    const int nbIter = 5; //ce nombre va être multiplié par 100
     const char *fichierEntree = "images/arch_logo.png";
 
     IFS ifs = compresseImage(fichierEntree);

@@ -3,30 +3,50 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+CanalPixel** redimensionneZoneRect(double** zone, int largeur, int hauteur)
+{
+    int nl = largeur / 2;
+    int nh = hauteur / 2;
+    CanalPixel **nouvelleZone = malloc(nl * sizeof(CanalPixel*));
+
+    for(int i = 0 ; i < nl ; ++i)
+    {
+        nouvelleZone[i] = malloc(nh * sizeof(CanalPixel));
+        for(int j = 0 ; j < nh ; ++j)
+        {
+            nouvelleZone[i][j] = (CanalPixel)((zone[i * 2][j * 2] + zone[i * 2 + 1][j * 2]
+                                + zone[i * 2][j * 2 + 1] + zone[i * 2 + 1][j * 2 + 1]) / 4.);
+        }
+    }
+
+    return nouvelleZone;
+}
+
 void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
 {
-    CanalImage aux;
-    aux.largeur = 2*canal->largeur;
-    aux.hauteur = 2*canal->hauteur;
-    aux.data = malloc(aux.largeur * sizeof(CanalPixel*));
-    for(int i = 0; i<aux.largeur; i++)
-        aux.data[i] = malloc(aux.hauteur * sizeof(CanalPixel));
-
-    for(int x = 0; x<aux.largeur; x++)
-        for(int y = 0; y<aux.hauteur; y++)
-        {
-            int i = (x/2)/sizeRB + ((y/2)/sizeRB)*(canal->largeur/sizeRB);
-            //printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
-            aux.data[x][y] = (CanalPixel)(double) ifs[i].pente * canal->data[(x/2) + ifs[i].x][(y/2) + ifs[i].y] + ifs[i].y0;
-        }
+    double** aux = malloc(2*canal->largeur * sizeof(double*));
+    for(int i = 0; i<2*canal->largeur; i++)
+        aux[i] = calloc(2*canal->hauteur, sizeof(double));
+    
+    for(int j = 0; j<100; j++){
+        for(int x = 0; x<2*canal->largeur; x++)
+            for(int y = 0; y<2*canal->hauteur; y++)
+            {
+                int i = (x/2)/sizeRB + ((y/2)/sizeRB)*(canal->largeur/sizeRB);
+                //printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
+                aux[x][y] = (double) ifs[i].pente * aux[x + 2*ifs[i].x][y + 2*ifs[i].y] + ifs[i].y0;
+            }
+    }
 
     for(int i = 0 ; i < canal->largeur ; ++i)
         free(canal->data[i]);
     free(canal->data);
 
-    canal->data = redimensionneZoneRectangle(aux.data, aux.largeur, aux.hauteur);
+    canal->data = redimensionneZoneRect(aux, 2*canal->largeur, 2*canal->hauteur);
 
-    freeCanalImage(&aux);
+    for(int i = 0; i<2*canal->largeur; i++)
+        free(aux[i]);
+    free(aux);
 }
 
 CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int largeur, const int hauteur, const int nbIter)

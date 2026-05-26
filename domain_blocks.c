@@ -34,8 +34,8 @@ double *combiValeursRedim(CanalImage img, int x, int y, int RBsize)
     for(int i = 0 ; i < RBsize ; ++i)
         for(int j = 0 ; j < RBsize ; ++j)
         {
-            pixels[i + RBsize*j] = (img.data[2 * i + x][2 * j + y] + img.data[2 * i + x][2 * j + 1 + y] 
-                                    + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y])/4;
+            pixels[i + RBsize*j] = (double)(img.data[2 * i + x][2 * j + y] + img.data[2 * i + x][2 * j + 1 + y] 
+                                    + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y])/4.;
         }
     
     return pixels;
