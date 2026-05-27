@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 CanalPixel** redimensionneZoneRect(double** zone, int largeur, int hauteur)
 {
@@ -22,19 +23,27 @@ CanalPixel** redimensionneZoneRect(double** zone, int largeur, int hauteur)
     return nouvelleZone;
 }
 
-void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
+void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB, const int nbIter)
 {
-    double** aux = malloc(2*canal->largeur * sizeof(double*));
-    for(int i = 0; i<2*canal->largeur; i++)
-        aux[i] = calloc(2*canal->hauteur, sizeof(double));
+    srand(time(NULL));
+
+    double*** aux = malloc(2 * sizeof(double**));
+    for(int j = 0 ; j < 2 ; ++j)
+    {
+        aux[j] = malloc(2*canal->largeur * sizeof(double*));
+        for(int i = 0; i<2*canal->largeur; i++)
+        {
+            aux[j][i] = calloc(2*canal->hauteur, sizeof(double));
+        }
+    }
     
-    for(int j = 0; j<100; j++){
+    for(int j = 0; j<nbIter; j++){
         for(int x = 0; x<2*canal->largeur; x++)
             for(int y = 0; y<2*canal->hauteur; y++)
             {
                 int i = (x/2)/sizeRB + ((y/2)/sizeRB)*(canal->largeur/sizeRB);
                 //printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
-                aux[x][y] = (double) ifs[i].pente * aux[x + 2*ifs[i].x][y + 2*ifs[i].y] + ifs[i].y0;
+                aux[j % 2][x][y] = (double) ifs[i].pente * aux[(j+1) % 2][x + 2*ifs[i].x][y + 2*ifs[i].y] + ifs[i].y0;
             }
     }
 
@@ -42,10 +51,14 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB)
         free(canal->data[i]);
     free(canal->data);
 
-    canal->data = redimensionneZoneRect(aux, 2*canal->largeur, 2*canal->hauteur);
+    canal->data = redimensionneZoneRect(aux[(nbIter+1)%2], 2*canal->largeur, 2*canal->hauteur);
 
-    for(int i = 0; i<2*canal->largeur; i++)
-        free(aux[i]);
+    for(int j = 0 ; j < 2 ; ++j)
+    {
+        for(int i = 0; i<2*canal->largeur; i++)
+            free(aux[j][i]);
+        free(aux[j]);
+    }
     free(aux);
 }
 
@@ -55,17 +68,10 @@ CanalImage decompresseCanal(const Fonction* ifs, const int sizeRB, const int lar
     canal.largeur = largeur;
     canal.hauteur = hauteur;
     canal.data = malloc(largeur * sizeof(CanalPixel*));
-    for(int i = 0; i<largeur; i++){
+    for(int i = 0; i<largeur; i++)
         canal.data[i] = malloc(hauteur * sizeof(CanalPixel));
-        for(int j = 0; j<hauteur; j++)
-            canal.data[i][j] = 122;
-    }
 
-    for(int i = 0; i<nbIter; i ++)
-    {
-        printf("itération %d sur %d.\n", i+1, nbIter);
-        iter(ifs, &canal, sizeRB);
-    }
+    iter(ifs, &canal, sizeRB, nbIter);
 
     return canal;
 }

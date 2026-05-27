@@ -14,7 +14,6 @@ Fonction* trouveIFS(CanalImage img, const int RBsize, int *nbRB)
 
     for(int i = 0 ; i < (*nbRB) ; ++i)
     {
-        printf("\ndébut recherche RB (%d sur %d) : \n", i+1, *nbRB);
         ifs[i] = trouveDB(img, rangeBlocks[i], RBsize);
     }
 
@@ -25,7 +24,7 @@ Fonction* trouveIFS(CanalImage img, const int RBsize, int *nbRB)
 
 IFS compresseImage(const char* fichierEntree)
 {
-    const int RBsize = 4;
+    const int RBsize = 7;
 
     Image img = chargeCarre(fichierEntree, RBsize);
     
@@ -55,25 +54,49 @@ IFS compresseImage(const char* fichierEntree)
 
 int main()
 {
-    const int nbIter = 5; //ce nombre va être multiplié par 100
-    const char *fichierEntree = "images/arch_logo.png";
+    int nbIter = 1; //ce nombre va être multiplié par 100
+    const char *fichierEntree = "images/Sierpinski.png";
 
-    IFS ifs = compresseImage(fichierEntree);
-    encodeIFS("save.ifs", ifs);
+    // IFS ifs = compresseImage(fichierEntree);
+    // encodeIFS("save.ifs", ifs);
 
-    printf("\n=======================\n ");
-    printf("= début décompression =\n ");
-    printf("=======================\n ");
+    // printf("\n=======================\n ");
+    // printf("= début décompression =\n ");
+    // printf("=======================\n ");
 
     IFS alt = decodeIFS("save.ifs");
 
     Image reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
+    char *fichierSortie = "images/created1.bmp";
+    sauveFichier(reconstruite, fichierSortie);
 
-    const char *fichierSortie = "images/created.bmp";
+    nbIter = 0;
+    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter); 
+    fichierSortie = "images/created0.bmp";
+    sauveFichier(reconstruite, fichierSortie);
+
+    nbIter = 2;
+    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter); 
+    fichierSortie = "images/created2.bmp";
+    sauveFichier(reconstruite, fichierSortie);
+
+    nbIter = 5;
+    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
+    fichierSortie = "images/created5.bmp";
+    sauveFichier(reconstruite, fichierSortie);
+
+    nbIter = 10;
+    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
+    fichierSortie = "images/created10.bmp";
+    sauveFichier(reconstruite, fichierSortie);
+
+    nbIter = 50;
+    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
+    fichierSortie = "images/created50.bmp";
     sauveFichier(reconstruite, fichierSortie);
 
     freeImage(&reconstruite);
-    freeIFS(ifs);
+    // freeIFS(ifs);
     freeIFS(alt);
 
     printf("fin.\n");

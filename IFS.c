@@ -37,6 +37,7 @@ void encodeIFS(char *nomFichier, const IFS ifs)
             fprintf(fichier, "%d %d %f %f\n", ifs.fs[c][i].x, ifs.fs[c][i].y, ifs.fs[c][i].pente, ifs.fs[c][i].y0);
         }
     }
+    fclose(fichier);
 }
 
 IFS decodeIFS(char *nomFichier)
@@ -63,6 +64,8 @@ IFS decodeIFS(char *nomFichier)
             fscanf(fichier, "%d %d %lf %lf\n", &resultat.fs[c][i].x, &resultat.fs[c][i].y, &resultat.fs[c][i].pente, &resultat.fs[c][i].y0);
         }
     }
+
+    fclose(fichier);
 
     return resultat;
 }
