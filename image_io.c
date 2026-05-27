@@ -38,9 +38,8 @@ Image chargeCarre(const char* fichier, int RBsize)
 
     printf("l : %d, h : %d\n", largeur, hauteur);
 
-    int largeurArrondie = largeur + RBsize - (largeur % RBsize);
-    int hauteurArrondie = hauteur + RBsize - (hauteur % RBsize);
-    
+    int largeurArrondie = (largeur % RBsize == 0) ? largeur : largeur + RBsize - (largeur % RBsize);
+    int hauteurArrondie = (hauteur % RBsize == 0) ? hauteur : hauteur + RBsize - (hauteur % RBsize); 
     Image img = imageVide(largeurArrondie, hauteurArrondie, 4);
 
     for(int i = 0 ; i < largeur ; ++i)

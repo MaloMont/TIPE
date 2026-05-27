@@ -9,6 +9,7 @@
 
 Fonction* trouveIFS(CanalImage img, const int RBsize, int *nbRB)
 {
+    printf("trouveIFS.\n");
     RangeBlock *rangeBlocks = trouveRBs(img, RBsize, nbRB);
     Fonction *ifs = malloc((*nbRB) * sizeof(Fonction));
 
@@ -24,7 +25,7 @@ Fonction* trouveIFS(CanalImage img, const int RBsize, int *nbRB)
 
 IFS compresseImage(const char* fichierEntree)
 {
-    const int RBsize = 7;
+    const int RBsize = 5;
 
     Image img = chargeCarre(fichierEntree, RBsize);
     
@@ -55,10 +56,11 @@ IFS compresseImage(const char* fichierEntree)
 int main()
 {
     const int nbIter = 100;
-    const char *fichierEntree = "images/Sierpinski.png";
+    const char *fichierEntree = "images/arch_logo.png";
 
     IFS ifs = compresseImage(fichierEntree);
     encodeIFS("save.ifs", ifs);
+
     printf("\n=======================\n ");
     printf("= début décompression =\n ");
     printf("=======================\n ");
@@ -66,7 +68,7 @@ int main()
     IFS alt = decodeIFS("save.ifs");
 
     Image reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
-    char *fichierSortie = "images/created1.bmp";
+    char *fichierSortie = "images/created.bmp";
     sauveFichier(reconstruite, fichierSortie);
 
     freeImage(&reconstruite);
