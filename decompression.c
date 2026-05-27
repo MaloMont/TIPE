@@ -30,32 +30,39 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB, const int nb
     double*** aux = malloc(2 * sizeof(double**));
     for(int j = 0 ; j < 2 ; ++j)
     {
-        aux[j] = malloc(2*canal->largeur * sizeof(double*));
-        for(int i = 0; i<2*canal->largeur; i++)
+        aux[j] = malloc(canal->largeur * sizeof(double*));
+        for(int i = 0; i<canal->largeur; i++)
         {
-            aux[j][i] = calloc(2*canal->hauteur, sizeof(double));
+            aux[j][i] = calloc(canal->hauteur, sizeof(double));
+            for(int k = 0 ; k < canal->hauteur ; ++k)
+                aux[j][i][k] = rand() % 255;
         }
     }
     
     for(int j = 0; j<nbIter; j++){
-        for(int x = 0; x<2*canal->largeur; x++)
-            for(int y = 0; y<2*canal->hauteur; y++)
+        for(int x = 0; x<canal->largeur; x++)
+            for(int y = 0; y<canal->hauteur; y++)
             {
-                int i = (x/2)/sizeRB + ((y/2)/sizeRB)*(canal->largeur/sizeRB);
-                //printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
-                aux[j % 2][x][y] = (double) ifs[i].pente * aux[(j+1) % 2][x + 2*ifs[i].x][y + 2*ifs[i].y] + ifs[i].y0;
+                int i = x/sizeRB + (y/sizeRB)*(canal->largeur/sizeRB);
+                int xinRB = x%sizeRB, yinRB = y%sizeRB;
+                int xDB = x - xinRB + ifs[i].x, yDB = y - yinRB + ifs[i].y;
+                double moyenne = (aux[(j+1) % 2][xDB + 2*xinRB][yDB + 2*yinRB] 
+                                + aux[(j+1) % 2][xDB + 2*xinRB + 1][yDB + 2*yinRB]
+                                + aux[(j+1) % 2][xDB + 2*xinRB][yDB + 2*yinRB + 1]
+                                + aux[(j+1) % 2][xDB + 2*xinRB + 1][yDB + 2*yinRB + 1]
+                                )/4.;
+//                printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
+                aux[j % 2][x][y] = (double) ifs[i].pente * moyenne + ifs[i].y0;
             }
     }
 
-    for(int i = 0 ; i < canal->largeur ; ++i)
-        free(canal->data[i]);
-    free(canal->data);
 
-    canal->data = redimensionneZoneRect(aux[(nbIter+1)%2], 2*canal->largeur, 2*canal->hauteur);
-
+    for(int x = 0; x<canal->largeur; x++)
+        for(int y = 0; y<canal->hauteur; y++)
+            canal->data[x][y] = (CanalPixel) aux[(nbIter+1)%2][x][y];
     for(int j = 0 ; j < 2 ; ++j)
     {
-        for(int i = 0; i<2*canal->largeur; i++)
+        for(int i = 0; i<canal->largeur; i++)
             free(aux[j][i]);
         free(aux[j]);
     }

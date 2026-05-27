@@ -54,15 +54,14 @@ IFS compresseImage(const char* fichierEntree)
 
 int main()
 {
-    int nbIter = 1; //ce nombre va être multiplié par 100
+    const int nbIter = 100;
     const char *fichierEntree = "images/Sierpinski.png";
 
-    // IFS ifs = compresseImage(fichierEntree);
-    // encodeIFS("save.ifs", ifs);
-
-    // printf("\n=======================\n ");
-    // printf("= début décompression =\n ");
-    // printf("=======================\n ");
+    IFS ifs = compresseImage(fichierEntree);
+    encodeIFS("save.ifs", ifs);
+    printf("\n=======================\n ");
+    printf("= début décompression =\n ");
+    printf("=======================\n ");
 
     IFS alt = decodeIFS("save.ifs");
 
@@ -70,33 +69,8 @@ int main()
     char *fichierSortie = "images/created1.bmp";
     sauveFichier(reconstruite, fichierSortie);
 
-    nbIter = 0;
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter); 
-    fichierSortie = "images/created0.bmp";
-    sauveFichier(reconstruite, fichierSortie);
-
-    nbIter = 2;
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter); 
-    fichierSortie = "images/created2.bmp";
-    sauveFichier(reconstruite, fichierSortie);
-
-    nbIter = 5;
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
-    fichierSortie = "images/created5.bmp";
-    sauveFichier(reconstruite, fichierSortie);
-
-    nbIter = 10;
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
-    fichierSortie = "images/created10.bmp";
-    sauveFichier(reconstruite, fichierSortie);
-
-    nbIter = 50;
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
-    fichierSortie = "images/created50.bmp";
-    sauveFichier(reconstruite, fichierSortie);
-
     freeImage(&reconstruite);
-    // freeIFS(ifs);
+    freeIFS(ifs);
     freeIFS(alt);
 
     printf("fin.\n");

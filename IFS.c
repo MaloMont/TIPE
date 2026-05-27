@@ -6,8 +6,8 @@
  * Spécification des fichiers de stockage :
  * ligne 1 : nbCanaux.
  * ligne 2 : le nombre de fonctions par canal
- * ligne 3 : largeur hauteur
- * ligne 4 : la taille d'un range block
+ * ligne 3 : la taille d'un range block
+ * ligne 4 : largeur hauteur
  * nbCanaux fois : 
  *    autant de lignes que de fonctions sous la forme : x y pente y0 [symétrie](plus tard)
  */
