@@ -55,14 +55,14 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB, const int nb
                                 + aux[(j+1) % 2][xDB + 2*xinRB][yDB + 2*yinRB + 1]
                                 + aux[(j+1) % 2][xDB + 2*xinRB + 1][yDB + 2*yinRB + 1]
                                 )/4.;
-                aux[j % 2][x][y] = MAX(0., MIN(255., (double) ifs[i].pente * moyenne + ifs[i].y0));
+                aux[j % 2][x][y] = (double) ifs[i].pente * moyenne + ifs[i].y0;
             }
     }
 
 
     for(int x = 0; x<canal->largeur; x++)
         for(int y = 0; y<canal->hauteur; y++)
-            canal->data[x][y] = (CanalPixel) aux[(nbIter+1)%2][x][y];
+            canal->data[x][y] = round(MAX(0., MIN(255., aux[(nbIter+1)%2][x][y])));
     for(int j = 0 ; j < 2 ; ++j)
     {
         for(int i = 0; i<canal->largeur; i++)
