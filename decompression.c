@@ -51,7 +51,12 @@ void iter(const Fonction* ifs, CanalImage *canal, const int sizeRB, const int nb
                                 + aux[(j+1) % 2][xDB + 2*xinRB][yDB + 2*yinRB + 1]
                                 + aux[(j+1) % 2][xDB + 2*xinRB + 1][yDB + 2*yinRB + 1]
                                 )/4.;
-//                printf("(%d, %d)[RB %d] size: %d ; largeur: %d ; ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].y);
+                if(x == 140 && y == 76)
+                {
+                    printf("(%d, %d)[RB %d] size: %d ; ifs x : %d, ifs y : %d\n", x, y, i, sizeRB, canal->largeur, ifs[i].x, ifs[i].y);
+                    printf("position dans le rb : %d, %d ; dans le db : %d, %d.\n", xinRB, yinRB, xDB, yDB);
+                    printf("pente : %ld, y0 : %ld\n", ifs[i].pente, ifs[i].y0);
+                }
                 aux[j % 2][x][y] = (double) ifs[i].pente * moyenne + ifs[i].y0;
             }
     }

@@ -36,6 +36,8 @@ Image chargeCarre(const char* fichier, int RBsize)
     int largeur, hauteur, nbCanaux;
     Pixel* tmp = (Pixel*)stbi_load(fichier, &largeur, &hauteur, &nbCanaux, 4);
 
+    if(!tmp)
+        printf("ERREUR: impossible de charger %s.\n", fichier);
     printf("l : %d, h : %d\n", largeur, hauteur);
 
     int largeurArrondie = (largeur % RBsize == 0) ? largeur : largeur + RBsize - (largeur % RBsize);

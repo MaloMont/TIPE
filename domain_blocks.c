@@ -35,7 +35,7 @@ double *combiValeursRedim(CanalImage img, int x, int y, int RBsize)
         for(int j = 0 ; j < RBsize ; ++j)
         {
             pixels[i + RBsize*j] = (double)(img.data[2 * i + x][2 * j + y] + img.data[2 * i + x][2 * j + 1 + y] 
-                                    + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y])/4.;
+                                    + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y]) / 4.;
         }
     
     return pixels;
@@ -51,7 +51,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     Fonction fonction = {0, 0, 0, 0};
     double bestEcart = 1000000.;
 
-    int pas = 1;
+    int pas = 3;
 
     for(int xDB = 0 ; xDB + DBsize < img.largeur ; xDB += pas)
     {
