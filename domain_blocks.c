@@ -35,9 +35,9 @@ double *combiValeursRedim(CanalImage img, int x, int y, int RBsize)
         for(int j = 0 ; j < RBsize ; ++j)
         {
             pixels[i + RBsize*j] = (double)(img.data[2 * i + x][2 * j + y] + img.data[2 * i + x][2 * j + 1 + y] 
-                                    + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y]) / 4.;
+                                      + img.data[2 * i + 1 + x][2 * j + y] + img.data[2 * i + 1 + x][2 * j + 1 + y]) / 4.;
         }
-    
+
     return pixels;
 }
 
@@ -51,7 +51,7 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     Fonction fonction = {0, 0, 0, 0};
     double bestEcart = 1000000.;
 
-    int pas = 3;
+    int pas = 1;
 
     for(int xDB = 0 ; xDB + DBsize < img.largeur ; xDB += pas)
     {
@@ -80,7 +80,22 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
                 return fonction;
             }
         }
-    }    
+    }
+
+    if( abs(cible.x - 38) <= 2 && abs(cible.y - 193) <= 2)
+    {
+        printf("fonction pour 38 193 : %d, %d ; %f, %f.\n", fonction.x, fonction.y, fonction.pente, fonction.y0);
+        for(int i = 0 ; i < RBsize ; ++i)
+            for(int j = 0 ; j < RBsize ; ++j)
+                printf("%d <-> %f (%f)\n",
+                    img.data[cible.x + i][cible.y + j], 
+                    (double)(img.data[2 * i + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y] 
+                            + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y]) / 4.,
+                    ((double)(img.data[2 * i + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y] 
+                            + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y]) / 4.
+                    ) * fonction.pente + fonction.y0
+                );
+    }
 
     free(valeursRB);
     return fonction;

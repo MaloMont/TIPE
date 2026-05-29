@@ -54,6 +54,11 @@ IFS decodeIFS(char *nomFichier)
     fscanf(fichier, "%d\n%d\n%d\n", &resultat.nbCanaux, &resultat.nbFonctions, &resultat.RBsize);
     fscanf(fichier, "%d %d\n", &resultat.largeur, &resultat.hauteur);
 
+    /* doublement de la taille */
+    resultat.largeur *= 2;
+    resultat.hauteur *= 2;
+    resultat.RBsize  *= 2;
+
     resultat.fs = malloc(resultat.nbCanaux * sizeof(Fonction*));
 
     for(int c = 0 ; c < resultat.nbCanaux ; ++c)
@@ -62,6 +67,8 @@ IFS decodeIFS(char *nomFichier)
         for(int i = 0 ; i < resultat.nbFonctions ; ++i)
         {
             fscanf(fichier, "%d %d %lf %lf\n", &resultat.fs[c][i].x, &resultat.fs[c][i].y, &resultat.fs[c][i].pente, &resultat.fs[c][i].y0);
+            resultat.fs[c][i].x *= 2;
+            resultat.fs[c][i].y *= 2;
         }
     }
 

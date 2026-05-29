@@ -27,7 +27,7 @@ Fonction* trouveIFS(CanalImage img, const int RBsize, int *nbRB)
 
 IFS compresseImage(const char* fichierEntree)
 {
-    const int RBsize = 10;
+    const int RBsize = 4;
 
     Image img = chargeCarre(fichierEntree, RBsize);
     
@@ -58,7 +58,7 @@ IFS compresseImage(const char* fichierEntree)
 int main()
 {
     const int nbIter = 200;
-    const char *fichierEntree = "images/arch_logo_gris.png";
+    const char *fichierEntree = "images/arch_logo.png";
 
     IFS ifs = compresseImage(fichierEntree);
     encodeIFS("save.ifs", ifs);
@@ -69,27 +69,12 @@ int main()
 
     IFS alt = decodeIFS("save.ifs");
 
-    Image reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, 1);
-    sauveFichier(reconstruite, "images/created1.bmp");
-
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, 2);
-    sauveFichier(reconstruite, "images/created2.bmp");
-
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, 3);
-    sauveFichier(reconstruite, "images/created3.bmp");
-
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, 4);
-    sauveFichier(reconstruite, "images/created4.bmp");
-
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, 5);
-    sauveFichier(reconstruite, "images/created5.bmp");
-
-    reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
+    Image reconstruite = decompresseImage(alt.fs, alt.RBsize, alt.largeur, alt.hauteur, alt.nbCanaux, nbIter);
     char *fichierSortie = "images/created.bmp";
     sauveFichier(reconstruite, fichierSortie);
 
     freeImage(&reconstruite);
-    // freeIFS(ifs);
+    freeIFS(ifs);
     freeIFS(alt);
 
     printf("fin.\n");
