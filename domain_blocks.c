@@ -42,7 +42,7 @@ double *combiValeursRedim(CanalImage img, int x, int y, int RBsize)
 }
 
 /* ça se voit */
-Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
+Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize, int pas)
 {
     //printf("searching for RB (%d %d, %d %d)", cible.x, cible.y, cible.x + RBsize, cible.y + RBsize);
     double *valeursRB = valeursZone1D(img, cible.x, cible.y, RBsize);
@@ -50,8 +50,6 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize)
     int DBsize = 2 * RBsize;
     Fonction fonction = {0, 0, 0, 0};
     double bestEcart = 1000000.;
-
-    int pas = 1;
 
     for(int xDB = 0 ; xDB + DBsize < img.largeur ; xDB += pas)
     {

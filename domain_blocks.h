@@ -5,6 +5,6 @@
 #include "range_blocks.h"
 #include "IFS.h"
 
-Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize);
+Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize, int pas);
 
 #endif

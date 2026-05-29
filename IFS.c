@@ -40,7 +40,7 @@ void encodeIFS(char *nomFichier, const IFS ifs)
     fclose(fichier);
 }
 
-IFS decodeIFS(char *nomFichier)
+IFS decodeIFS(char *nomFichier, double scale)
 {
     FILE *fichier = fopen(nomFichier, "r");
     if(!fichier)
@@ -55,9 +55,9 @@ IFS decodeIFS(char *nomFichier)
     fscanf(fichier, "%d %d\n", &resultat.largeur, &resultat.hauteur);
 
     /* doublement de la taille */
-    // resultat.largeur *= 2;
-    // resultat.hauteur *= 2;
-    // resultat.RBsize  *= 2;
+    resultat.largeur *= scale;
+    resultat.hauteur *= scale;
+    resultat.RBsize  *= scale;
 
     resultat.fs = malloc(resultat.nbCanaux * sizeof(Fonction*));
 
@@ -67,8 +67,8 @@ IFS decodeIFS(char *nomFichier)
         for(int i = 0 ; i < resultat.nbFonctions ; ++i)
         {
             fscanf(fichier, "%d %d %lf %lf\n", &resultat.fs[c][i].x, &resultat.fs[c][i].y, &resultat.fs[c][i].pente, &resultat.fs[c][i].y0);
-            // resultat.fs[c][i].x *= 2;
-            // resultat.fs[c][i].y *= 2;
+            resultat.fs[c][i].x *= scale;
+            resultat.fs[c][i].y *= scale;
         }
     }
 
