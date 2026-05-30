@@ -80,21 +80,6 @@ Fonction trouveDB(CanalImage img, RangeBlock cible, int RBsize, int pas)
         }
     }
 
-    if( abs(cible.x - 38) <= 2 && abs(cible.y - 193) <= 2)
-    {
-        printf("fonction pour 38 193 : %d, %d ; %f, %f.\n", fonction.x, fonction.y, fonction.pente, fonction.y0);
-        for(int i = 0 ; i < RBsize ; ++i)
-            for(int j = 0 ; j < RBsize ; ++j)
-                printf("%d <-> %f (%f)\n",
-                    img.data[cible.x + i][cible.y + j], 
-                    (double)(img.data[2 * i + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y] 
-                            + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y]) / 4.,
-                    ((double)(img.data[2 * i + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y] 
-                            + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + fonction.y + cible.y] + img.data[2 * i + 1 + fonction.x + cible.x][2 * j + 1 + fonction.y + cible.y]) / 4.
-                    ) * fonction.pente + fonction.y0
-                );
-    }
-
     free(valeursRB);
     return fonction;
 }

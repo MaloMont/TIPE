@@ -95,7 +95,7 @@ int main()
 
     int scale = 1;
     printf("facteur d'agrandissement :\n> ");
-    scanf("%d", &nbIter);
+    scanf("%d", &scale);
 
     char fichierSortie[100];
     printf("image de sortie pour la décompression (en .bmp):\n> ");
