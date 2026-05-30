@@ -60,7 +60,7 @@ int main()
     scanf("%d", &compression);
 
     char fichierIFS[100];
-    printf("fichier de destination pour la compression (par exemple out.ifs) :\n> ");
+    printf("fichier de stockage au format ifs (par exemple out.ifs) :\n> ");
     scanf("%s", fichierIFS);
 
     if(compression == 1)
@@ -78,6 +78,8 @@ int main()
         printf("taille pour les range blocks :\n> ");
         scanf("%d", &RBsize);
 
+        printf("début de la compression...\n");
+
         IFS ifs = compresseImage(fichierEntree, pas, RBsize);
         encodeIFS(fichierIFS, ifs);
 
@@ -85,21 +87,23 @@ int main()
     }
 
 
-    printf("\n=======================\n");
-    printf("= début décompression =\n");
-    printf("=======================\n");
+    printf("\n==================\n");
+    printf("=  décompression =\n");
+    printf("==================\n");
 
     int nbIter = 200;
     printf("nbIter :\n> ");
     scanf("%d", &nbIter);
 
-    int scale = 1;
+    double scale = 1;
     printf("facteur d'agrandissement :\n> ");
-    scanf("%d", &scale);
+    scanf("%lf", &scale);
 
     char fichierSortie[100];
     printf("image de sortie pour la décompression (en .bmp):\n> ");
     scanf("%s", fichierSortie);
+
+    printf("début de la décopression...\n");
 
     IFS alt = decodeIFS(fichierIFS, scale);
 
