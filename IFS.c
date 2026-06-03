@@ -34,7 +34,10 @@ void encodeIFS(char *nomFichier, const IFS ifs)
     {
         for(int i = 0 ; i < ifs.nbFonctions ; ++i)
         {
-            fprintf(fichier, "%d %d %f %f\n", ifs.fs[c][i].x, ifs.fs[c][i].y, ifs.fs[c][i].pente, ifs.fs[c][i].y0);
+            if(ifs.fs[c][i].pente == 0.)
+                fprintf(fichier, "%f\n", ifs.fs[c][i].y0);
+            else
+                fprintf(fichier, "%d %d %f %f\n", ifs.fs[c][i].x, ifs.fs[c][i].y, ifs.fs[c][i].pente, ifs.fs[c][i].y0);
         }
     }
     fclose(fichier);
@@ -66,7 +69,18 @@ IFS decodeIFS(char *nomFichier, double scale)
         resultat.fs[c] = malloc(resultat.nbFonctions * sizeof(Fonction));
         for(int i = 0 ; i < resultat.nbFonctions ; ++i)
         {
-            fscanf(fichier, "%d %d %lf %lf\n", &resultat.fs[c][i].x, &resultat.fs[c][i].y, &resultat.fs[c][i].pente, &resultat.fs[c][i].y0);
+            char buffer[50];
+            fscanf(fichier,"%s", buffer);
+            if(strlen(buffer) > 6){
+                resultat.fs[c][i].y0 = atof(buffer);
+                resultat.fs[c][i].pente = 0.;
+                int nbRBparLigne = resultat.largeur/resultat.RBsize;
+                resultat.fs[c][i].y = - (i / nbRBparLigne) * resultat.RBsize;
+                resultat.fs[c][i].x = - (i % nbRBparLigne) * resultat.RBsize;
+            }else{
+                resultat.fs[c][i].x = atoi(buffer);
+                fscanf(fichier, "%d %lf %lf\n", &resultat.fs[c][i].y, &resultat.fs[c][i].pente, &resultat.fs[c][i].y0);
+            }
             resultat.fs[c][i].x *= scale;
             resultat.fs[c][i].y *= scale;
         }
