@@ -1,7 +1,7 @@
 #include "IFS.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 /*
  * Spécification des fichiers de stockage :
  * ligne 1 : nbCanaux.
@@ -35,9 +35,9 @@ void encodeIFS(char *nomFichier, const IFS ifs)
         for(int i = 0 ; i < ifs.nbFonctions ; ++i)
         {
             if(ifs.fs[c][i].pente == 0.)
-                fprintf(fichier, "%f\n", ifs.fs[c][i].y0);
+                fprintf(fichier, "%4.3lf\n", ifs.fs[c][i].y0);
             else
-                fprintf(fichier, "%d %d %f %f\n", ifs.fs[c][i].x, ifs.fs[c][i].y, ifs.fs[c][i].pente, ifs.fs[c][i].y0);
+                fprintf(fichier, "%d %d %4.3lf %4.3lf\n", ifs.fs[c][i].x, ifs.fs[c][i].y, ifs.fs[c][i].pente, ifs.fs[c][i].y0);
         }
     }
     fclose(fichier);
@@ -71,7 +71,7 @@ IFS decodeIFS(char *nomFichier, double scale)
         {
             char buffer[50];
             fscanf(fichier,"%s", buffer);
-            if(strlen(buffer) > 6){
+            if(strchr(buffer, '.') != NULL){
                 resultat.fs[c][i].y0 = atof(buffer);
                 resultat.fs[c][i].pente = 0.;
                 int nbRBparLigne = resultat.largeur/resultat.RBsize;
